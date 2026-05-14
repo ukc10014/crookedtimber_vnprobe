@@ -174,6 +174,7 @@ let renderContainer = null;
 let renderPaused = true;
 let starfieldSecondBeepAudio = null;
 let starfieldSecondBeepAccumulator = 0;
+let probeTargetNames = [];
 
 function isPrimeNumber(value) {
   if (value < 2) return false;
@@ -209,6 +210,24 @@ function generateProbeBeepTriplets(probeCount, primeBands) {
       bandPrimeAt(highPrimes, index * 73 + 23),
     ];
   });
+}
+
+function getProbeGeneratedName(index) {
+  return probeTargetNames[index] || PROBES[index]?.name || `Probe ${formatProbeNumber(index)}`;
+}
+
+function loadProbeTargetNames(sourceMetadata) {
+  probeTargetNames = Array(PROBES.length).fill('');
+  const items = sourceMetadata?.probeVectorIntersections?.items;
+  if (!Array.isArray(items)) return;
+
+  for (const item of items) {
+    const index = Number(item?.probeIndex);
+    const targetName = String(item?.target?.name || '').trim();
+    if (Number.isInteger(index) && index >= 0 && index < probeTargetNames.length && targetName) {
+      probeTargetNames[index] = targetName;
+    }
+  }
 }
 
 function updateProbeState() {
@@ -1054,6 +1073,7 @@ async function init() {
   const binBuffer = await binResponse.arrayBuffer();
   metadata = await metaResponse.json();
   landmarks = await landmarksResponse.json();
+  loadProbeTargetNames(metadata);
 
   const hygCount = metadata.starCount;
   const floatData = new Float32Array(binBuffer);
@@ -1782,16 +1802,12 @@ function formatGalacticHeading(direction) {
   return `l ${longitude.toFixed(1)}°, b ${latitude >= 0 ? '+' : ''}${latitude.toFixed(1)}°`;
 }
 
-function probeTargetName(probe) {
-  return probe.name.replace(/^[^—]+—\s*/, '');
-}
-
 function updateHUD() {
   const probe = PROBES[sim.probeIndex];
   const dist = probePos.length();
 
   document.getElementById('hud-probe').textContent =
-    `${formatGalacticHeading(probe.direction)} · ${probeTargetName(probe)}`;
+    `${formatGalacticHeading(probe.direction)} · ${getProbeGeneratedName(sim.probeIndex)}`;
   document.getElementById('hud-distance').textContent = formatLY(dist);
 
   // Time slider label
@@ -1844,7 +1860,7 @@ function selectProbe(index, options = {}) {
   updateHUD();
   markDirty();
   if (options.log) {
-    console.log(`[VNP] Selected: ${PROBES[sim.probeIndex].name} @ ${(PROBES[sim.probeIndex].velocity * 100).toFixed(1)}% c`);
+    console.log(`[VNP] Selected: ${getProbeGeneratedName(sim.probeIndex)} @ ${(PROBES[sim.probeIndex].velocity * 100).toFixed(1)}% c`);
   }
 }
 
@@ -1870,7 +1886,7 @@ function setupUI() {
   PROBES.forEach((p, i) => {
     const opt = document.createElement('option');
     opt.value = i;
-    opt.textContent = p.name;
+    opt.textContent = getProbeGeneratedName(i);
     sel.appendChild(opt);
   });
   sel.addEventListener('change', () => selectProbe(parseInt(sel.value), { log: true }));

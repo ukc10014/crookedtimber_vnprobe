@@ -24,6 +24,14 @@ python3 pipeline/process_hyg.py
 
 Downloads HYG v4.1 star catalog (~34MB CSV), processes ~119k stars, outputs binary + JSON to `data/processed/`. You only need to run this if the processed data is missing.
 
+One-off probe naming enrichment:
+
+```bash
+python3 pipeline/name_probe_vectors.py
+```
+
+This matches each deterministic probe vector to the nearest proper-name HYG star or landmark by angular separation and writes the table into `data/processed/metadata.json` as `probeVectorIntersections`.
+
 ### Project Structure
 
 ```
@@ -36,9 +44,10 @@ Downloads HYG v4.1 star catalog (~34MB CSV), processes ~119k stars, outputs bina
   static/                Captured starfield frame, corpus seed, assets
 /pipeline/
   process_hyg.py         Star catalog download + processing
+  name_probe_vectors.py  One-off probe vector target naming pass
 /data/processed/
   stars.bin              Float32Array: 7 floats/star (x,y,z, absMag, r,g,b)
-  metadata.json          Star count, magnitude range
+  metadata.json          Star count, magnitude range, probe target names
   landmarks.json         Named star positions for labels
 ```
 
