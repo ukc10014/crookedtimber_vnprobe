@@ -43,6 +43,20 @@ const HYG_EXCLUSION_RADIUS = 500; // ly — don't place procedural stars near So
 const SHOW_STAR_DATA_LABELS = true;
 const MAX_STAR_DATA_LABELS = 500;
 
+// Auditory marker for installation tuning. Disable this to return the
+// starfield to silence without touching the timing logic below.
+const STARFIELD_SECOND_BEEP_ENABLED = true;
+const STARFIELD_SECOND_BEEP_BANDS = [
+  { min: 83, max: 251 },     // low: audible on most consumer speakers without leaning into sub-bass
+  { min: 257, max: 997 },    // mid: speech/music presence range
+  { min: 1009, max: 4093 },  // high: bright but below brittle laptop-speaker edge
+];
+const STARFIELD_SECOND_BEEP_DURATION = 0.78;
+const STARFIELD_SECOND_BEEP_GAIN = 0.085;
+const STARFIELD_SECOND_BEEP_WET_GAIN = 0.034;
+const STARFIELD_SECOND_BEEP_FEEDBACK = 0.42;
+const STARFIELD_SECOND_BEEP_DELAY = 0.18;
+
 // Solar sail
 const SAIL_DISTANCE = 1000;      // meters ahead of probe
 const SAIL_SIZE = 2000;           // meters (2km wide diamond)
@@ -104,6 +118,8 @@ function generateProbeSwarm(count) {
 }
 
 const PROBES = generateProbeSwarm(PROBE_COUNT);
+const STARFIELD_SECOND_BEEP_PRIME_BANDS = STARFIELD_SECOND_BEEP_BANDS.map(generatePrimesInBand);
+const STARFIELD_SECOND_BEEP_TRIPLETS = generateProbeBeepTriplets(PROBE_COUNT, STARFIELD_SECOND_BEEP_PRIME_BANDS);
 
 // ---------------------------------------------------------------------------
 // Simulation state
@@ -156,6 +172,44 @@ const probeVelDir = new THREE.Vector3();
 let probeBeta = 0; // v/c
 let renderContainer = null;
 let renderPaused = true;
+let starfieldSecondBeepAudio = null;
+let starfieldSecondBeepAccumulator = 0;
+
+function isPrimeNumber(value) {
+  if (value < 2) return false;
+  if (value === 2) return true;
+  if (value % 2 === 0) return false;
+  for (let factor = 3; factor * factor <= value; factor += 2) {
+    if (value % factor === 0) return false;
+  }
+  return true;
+}
+
+function generatePrimesInBand({ min, max }) {
+  const primes = [];
+  let candidate = Math.max(2, Math.ceil(min));
+  if (candidate > 2 && candidate % 2 === 0) candidate += 1;
+  while (candidate <= max) {
+    if (isPrimeNumber(candidate)) primes.push(candidate);
+    candidate += candidate === 2 ? 1 : 2;
+  }
+  return primes;
+}
+
+function bandPrimeAt(bandPrimes, position) {
+  return bandPrimes[position % bandPrimes.length];
+}
+
+function generateProbeBeepTriplets(probeCount, primeBands) {
+  const [lowPrimes, midPrimes, highPrimes] = primeBands;
+  return Array.from({ length: probeCount }, (_, index) => {
+    return [
+      bandPrimeAt(lowPrimes, index * 17 + 5),
+      bandPrimeAt(midPrimes, index * 37 + 11),
+      bandPrimeAt(highPrimes, index * 73 + 23),
+    ];
+  });
+}
 
 function updateProbeState() {
   const probe = PROBES[sim.probeIndex];
@@ -167,6 +221,64 @@ function updateProbeState() {
     probe.direction[1] * probe.velocity * sim.time,
     probe.direction[2] * probe.velocity * sim.time,
   );
+}
+
+function getStarfieldSecondBeepAudio() {
+  if (!STARFIELD_SECOND_BEEP_ENABLED) return null;
+  if (!starfieldSecondBeepAudio) {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return null;
+    starfieldSecondBeepAudio = new AudioContext();
+  }
+  return starfieldSecondBeepAudio;
+}
+
+function beepStarfieldSecond() {
+  const audio = getStarfieldSecondBeepAudio();
+  if (!audio) return;
+  if (audio.state === 'suspended') {
+    audio.resume().catch(() => {});
+    return;
+  }
+
+  const now = audio.currentTime;
+  const triplet = STARFIELD_SECOND_BEEP_TRIPLETS[sim.probeIndex] || STARFIELD_SECOND_BEEP_TRIPLETS[0];
+  const voice = audio.createGain();
+  const dry = audio.createGain();
+  const wet = audio.createGain();
+  const delay = audio.createDelay(1.5);
+  const feedback = audio.createGain();
+
+  voice.gain.setValueAtTime(0.0001, now);
+  voice.gain.exponentialRampToValueAtTime(STARFIELD_SECOND_BEEP_GAIN, now + 0.018);
+  voice.gain.exponentialRampToValueAtTime(0.0001, now + STARFIELD_SECOND_BEEP_DURATION);
+  dry.gain.setValueAtTime(0.92, now);
+  wet.gain.setValueAtTime(STARFIELD_SECOND_BEEP_WET_GAIN, now);
+  delay.delayTime.setValueAtTime(STARFIELD_SECOND_BEEP_DELAY, now);
+  feedback.gain.setValueAtTime(STARFIELD_SECOND_BEEP_FEEDBACK, now);
+
+  voice.connect(dry).connect(audio.destination);
+  voice.connect(delay);
+  delay.connect(feedback).connect(delay);
+  delay.connect(wet).connect(audio.destination);
+
+  triplet.forEach((frequency, index) => {
+    const oscillator = audio.createOscillator();
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(frequency, now);
+    oscillator.detune.setValueAtTime((index - 1) * 1.5, now);
+    oscillator.connect(voice);
+    oscillator.start(now);
+    oscillator.stop(now + STARFIELD_SECOND_BEEP_DURATION + 0.05);
+  });
+
+  window.setTimeout(() => {
+    voice.disconnect();
+    dry.disconnect();
+    wet.disconnect();
+    delay.disconnect();
+    feedback.disconnect();
+  }, (STARFIELD_SECOND_BEEP_DURATION + STARFIELD_SECOND_BEEP_DELAY * 8) * 1000);
 }
 
 // ---------------------------------------------------------------------------
@@ -1535,6 +1647,14 @@ function simTick(dt) {
   sim.time = Math.min(sim.time, SIM_TIME_LIMIT_YEARS);
   if (sim.time >= SIM_TIME_LIMIT_YEARS) sim.playing = false;
   document.getElementById('time-slider').value = sim.time;
+
+  if (STARFIELD_SECOND_BEEP_ENABLED) {
+    starfieldSecondBeepAccumulator += dt;
+    while (starfieldSecondBeepAccumulator >= 1) {
+      starfieldSecondBeepAccumulator -= 1;
+      beepStarfieldSecond();
+    }
+  }
 }
 
 // ---------------------------------------------------------------------------
