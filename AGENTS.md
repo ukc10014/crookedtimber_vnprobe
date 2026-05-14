@@ -55,7 +55,7 @@ This repository contains a browser-based installation app with two screens that 
 - Patches the ONNX graph in-browser to expose residual-stream tensors as outputs.
 - Visualizes 30 residual-stream rows by 576 model dimensions as a full-screen activation field.
 - Displays prior generated text as a top ticker and the just-generated token as a large bottom readout.
-- Voices the just-generated token through the browser/system speech API when the token contains letters or numbers; punctuation-only and symbol-only tokens remain silent.
+- Can voice the just-generated token through the browser/system speech API when `VOICE_GENERATED_TOKENS` is enabled and the token contains letters or numbers; punctuation-only and symbol-only tokens remain silent.
 - Keeps `app/model.html` as a direct debug page for the model viewer.
 
 ## Coordination Rules
@@ -82,6 +82,7 @@ Implemented or partly implemented: 🦞
 - Model output is allowed to be strange, repetitive, collapsed, or strained; do not smooth it by default.
 - Splash/framing exists and is currently sourced from this `AGENTS.md` file.
 - `?mode=static` / `?mode=web` exists for the lighter captured-frame route.
+- Voice playback exists but is disabled by default unless `VOICE_GENERATED_TOKENS` is set to `true`.
 
 Not yet implemented:
 

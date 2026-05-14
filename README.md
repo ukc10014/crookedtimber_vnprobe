@@ -1,19 +1,13 @@
 README 24 April 2025
 
->*The probe **"Ladies and Gentlemen, It's Time: Take a Number Please"** pock-scabbed after thousands of years in the barren parsecs was one of an unruly swarm spreading across the Supercluster. The model-spec read: 1) assess exotic biochemistry, 2) install forge-worlds, 3) extinguish any forum flame-wars it accidentally starts. How does a Mind leisure at 0.27c? Cosmic-ray whack-a-mole in the diamond archive; mid-defrag, wedged between a choir of humpbacks wailing K-pop and a Turing-complete haiku engine obsessed with sneezing pandas, it finds a crumpled bootstrap memo:*
+## Von Neumann Probe Installation
 
-> **"Dear Warranty-Voidling: In interregnum, morbid symptoms emerge: patch early, patch often, and label your backups in something *other* than Wingdings.**"
+This repository contains a browser-based installation with two screens in one `/app/` experience:
 
->*Signed by three humans, two AIs, and one entity styling itself "Legal (Now 18 % More Omniscient)", the note ended with a blinking smiley in a hazmat tiara. Number-Please snorted vacuum, spawned the daemon "Symptom-Slapper-Deluxe-∞", dialled replication down a decorous epsilon, and rocketed on -— spraying pink diagnostic buoys what glitter-spelled LMAO OOPS in Morse-code gamma bursts -— a cosmic reminder that even the most hilarious morbid symptoms are, alas, still bugs.*
+- a live or static von Neumann probe starfield
+- a browser LLM activation viewer
 
->-a story made with o3 (7 turns, 72s total thinking time, loads human tweaking), impermanent transcript [here](https://chatgpt.com/share/680a0973-c4cc-8002-b707-9de4a16c3348)
-
-
----
-
-## Von Neumann Probe Simulator
-
-An interactive 3D star field simulator that visualises self-replicating probe trajectories across the Milky Way. Built with Three.js (r170, no build step).
+The main runtime lives at `app/index.html`. The root-level `README.md` is kept as a project overview and rough operator guide.
 
 ### Quick Start
 
@@ -33,10 +27,13 @@ Downloads HYG v4.1 star catalog (~34MB CSV), processes ~119k stars, outputs bina
 ### Project Structure
 
 ```
-/index.html              Main site (epistle/letter)
 /app/
-  index.html             Simulator UI (controls, HUD, tuning panel)
-  renderer.js            Core renderer, shaders, simulation (~1700 lines)
+  index.html             Main two-screen experience
+  renderer.js            Starfield renderer, shaders, simulation
+  model-viewer.js        Browser-facing LLM activation viewer
+  model-worker.js        Worker that runs the small model
+  model.html             Standalone model debug page
+  static/                Captured starfield frame, corpus seed, assets
 /pipeline/
   process_hyg.py         Star catalog download + processing
 /data/processed/
@@ -45,14 +42,11 @@ Downloads HYG v4.1 star catalog (~34MB CSV), processes ~119k stars, outputs bina
   landmarks.json         Named star positions for labels
 ```
 
-### Using the Simulator
+### Using the Starfield
 
-**Probes**: Select from 8 pre-defined probe trajectories (dropdown, bottom-left):
-- Alpha through Zeta: toward/away from galactic center, rotation axis, poles
-- Eta: toward Alpha Centauri
-- Theta: toward Large Magellanic Cloud (0.10c)
+The starfield uses a virtual swarm of 997 probes. The current probe is selected from that swarm and re-selected randomly when the starfield screen is re-entered from the prime cadence.
 
-All probes travel at 5% speed of light (except Theta at 10%).
+All probes travel at 5% speed of light.
 
 **Transport controls**:
 - Play/Pause button starts the simulation
@@ -119,6 +113,8 @@ The "Tune" button opens a live parameter panel for adjusting the volumetric Milk
 - Bloom post-processing (UnrealBloomPass)
 - Dirty-flag rendering: GPU idles when nothing changes (no fan noise)
 - Coordinates: light-years, origin at Sol, +x toward galactic center
+- The main `/app/` page auto-enters once the splash, starfield, and model are ready, then hard-cuts between the two screens on prime-number millisecond intervals.
+- The model viewer can speak generated alphanumeric tokens, but speech is disabled by default in `app/model-viewer.js` and `app/model.html`.
 
 ### Branches
 

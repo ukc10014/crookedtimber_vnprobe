@@ -262,13 +262,13 @@ function sampleFromLogits(logits) {
   return candidates[0][0];
 }
 
-function decodeToken(id) {
-  try {
-    return directTokenizer.decode([id], { skip_special_tokens: true });
-  } catch {
-    return String(id);
-  }
-}
+// function decodeToken(id) {
+//   try {
+//     return directTokenizer.decode([id], { skip_special_tokens: true });
+//   } catch {
+//     return String(id);
+//   }
+// }
 
 function appendAndDecodeGeneratedToken(id) {
   directGeneratedIds.push(id);
