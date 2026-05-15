@@ -99,8 +99,8 @@ Important design decisions still open:
 
 - Whether the flicker should encode a real machine-readable channel. Current leaning: yes, it should.
 - What to encode: dedication text, repo hash, contract address, timestamp sequence, corpus hash, model metadata, or a compact bundle of these.
-- Whether visible alternation should be human-ceremonial at roughly 1Hz, prime-number timing, or two layered channels: a human-visible cadence plus a hidden machine-readable payload.
-- Whether default mode should remain "live simulated starfield + live LLM" or return to "captured starfield frame + live LLM" for public delivery.
+- ~~Whether visible alternation should be human-ceremonial at roughly 1Hz, prime-number timing, or two layered channels: a human-visible cadence plus a hidden machine-readable payload.~~
+- ~~Whether default mode should remain "live simulated starfield + live LLM" or return to "captured starfield frame + live LLM" for public delivery.~~
 - What the actual cosmic host corpus is, how large it should be, and whether it should be visible, inspectable, or only fed to the model.
 - Inscription form: plain calldata, dedicated contract, NFT-adjacent object, or another structure. Current leaning: dedicated contract, not NFT framing.
 - Whether to name the "cosmic host" frame in the primary introduction or keep it in catalogue/secondary text.

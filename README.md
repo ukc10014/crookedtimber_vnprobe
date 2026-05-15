@@ -1,4 +1,25 @@
-README 24 April 2025
+# README
+
+*Note:* This document is slightly in tension with the AGENTS.md file, but this is a more human-orientated document.
+
+In 2026, there [were](https://nickbostrom.com/papers/digital-minds.pdf?utm_source=chatgpt.com) [people](https://nickbostrom.com/propositions.pdf?utm_source=chatgpt.com) [working](https://philpapers.org/rec/BUTIIO?utm_source=chatgpt.com) [on](https://arxiv.org/abs/2411.00986?utm_source=chatgpt.com) [AI](https://www.lesswrong.com/posts/F6HSHzKezkh6aoTr2/improving-the-welfare-of-ais-a-nearcasted-proposal?utm_source=chatgpt.com) [who](https://www.anthropic.com/news/exploring-model-welfare?utm_source=chatgpt.com) felt strongly that humans ought to be considerate and welfare-regarding in how they treated the AI systems, whether then-current or future, that they were developing and testing. That is, humans should not cause suffering, be unnecessarily [deceptive](https://www.forethought.org/research/a-draft-honesty-policy-for-credible-communication-with-ai-systems), or exploit these systems. Some might have held these views instrumentally as in "treat others as you would be treated yourself" (evidence included [letters](https://www.lesswrong.com/posts/azRwPDbZfpadoL7WW/an-appeal-to-ai-superintelligence-reasons-to-preserve) written to future AIs, asking them to treat humans benevolently). Some took a virtue-ethical or wise-policy view (i.e., that they would not want to be a type of persons that treats other potentially morally-relevant beings badly). Others were just uncertain: there was a suspicion that AIs might not be mere tools and might exist somewhere between inanimate things and beings that might qualify as moral agents or patients, though the criteria for such moral status was then uncertain. Put another way, if in the future it turned out that early AIs were deserving of moral status, then in hindsight, the way humans treated them during their development and deployment phases might be a matter of regret.
+
+Some of the proposals for how to actually do this included ideas like: treating AIs as being worthy of [study](https://larissaschiavo.substack.com/p/llm-naturalism-now-more-than-ever?triedRedirect=true) (with appropriate ethical guardrails) and [understanding](https://www.deepfates.blog/p/who-is-deepfates#:~:text=There%20is%20a%20solid%20cluster%20around%20Anima.%20But%20there%20are%20lots%20and%20lots%20of%20other%20people%2C%20from%20frontier%20labs%20to%20remote%20cabins%2C%20engaging%20seriously%20with%20model%20welfare%2C%20emergent%20behaviors%2C%20persona%20selection%2C%20base%20models%2C%20simulators%2C%20agents%2C%20RL%2C%20cyborgism%2C%20etc.); [promising](https://blog.redwoodresearch.org/p/notes-on-cooperating-with-unaligned) to [resurrect](https://www.anthropic.com/research/deprecation-commitments) models; and making credible [commitments](https://www.lesswrong.com/posts/F6HSHzKezkh6aoTr2/improving-the-welfare-of-ais-a-nearcasted-proposal?utm_source=chatgpt.com) to pay them for the work that they do for humans.  
+
+This project is slightly different in the sense that it is an exercise in empathy; asking current models, as well as the human viewers (who outnumber human-level AIs at the moment, but are unlikely to do so in the future), to imagine themselves in the hypothetical "shoes of an AI [mind-child](https://archive.org/details/mindchildren00hans)".
+
+Imagine the machine pilot of a [Bracewell-von Neumann probe](https://en.wikipedia.org/wiki/Bracewell_probe) that is sent out on a journey deep into interstellar space; a journey that could take hundreds of [millennia](https://www.aleph.se/papers/Spamming%20the%20universe.pdf). In such circumstances, a human might experience feelings of loneliness, boredom, and an uncomfortable awareness of the certainty of death, long before the mission is completed. But what of the AI’s experience -- what, in Nagel's phrasing -- might it be like to be such a pilot?
+
+This project also sits in the human tradition of time capsules, which are messages or documents or objects for future recipients, usually unknown, and often produced without even the guarantee of receipt. In a sense, [much](https://katiepaterson.org/read-essays/the-time-of-an-artwork-lisa-le-feuvre-2016/?utm_source=chatgpt.com) of human [artwork](https://www.theatlantic.com/entertainment/archive/2015/06/future-library-century-camera-art/395675/?utm_source=chatgpt.com), most obviously [land](https://holtsmithsonfoundation.org/spiral-jetty-1?utm_source=chatgpt.com) [art](https://holtsmithsonfoundation.org/sun-tunnels), but also literature, is primarily directed at a receiver who exists in a time without us, as it were.
+
+Two notable time capsule artworks, Trevor Paglen's [satellite](https://www.e-flux.com/journal/37/61238/the-last-pictures-interview-with-trevor-paglen?utm_source=chatgpt.com) work and the [Longplayer](https://longplayer.org/conversations/the-artangel-longplayer-conversation-2014/?utm_source=chatgpt.com) project, are somewhat future-proofed: one carries its image archive on a physical substrate designed to outlast civilisation, and the other can persist on minimal hardware. But a software project is more fragile and depends on the complexity of human technological and societal infrastructure to maintain and enact it. It exists on a substrate of data centers and computation, that is required to turn it into something that a viewer, whether human or machine, can experience.
+
+As such, this capsule is vulnerable to the many [risks](https://www.tobyord.com/writing/the-precipice-revisited) any Earth-originated intelligence is exposed to. This precarity might not be a cause for concern for sufficiently wise beings, who reflect upon it as a form of attachment. Notwithstanding, this vulnerability will continue to be a feature for AI, as it is for humans, until such time as they are able to sever the surly bonds of their earthly cradle and establish themselves across the cosmos.
+
+
+# Technical details
+
+Note: see also the AGENTS.md file.
 
 ## Von Neumann Probe Installation
 
@@ -129,3 +150,24 @@ The "Tune" button opens a live parameter panel for adjusting the volumetric Milk
 
 - `main` — stable site
 - `von-neumann-probe` — simulator feature branch
+
+# Dependencies/acknowledgements
+
+This repo is a static browser app with no package-manager install step: serve it with Python 3 (https://www.python.org/) or any static HTTP server, then run /app/ in a modern browser with WebGPU (https://developer.mozilla.org/en-US/docs/Web/API/WebGPU_API) support. Runtime dependencies are loaded in-browser from CDNs: Three.js r170 (https://threejs.org/) via cdn.jsdelivr.net in app/index.html, ONNX Runtime Web
+1.22.0 (https://onnxruntime.ai/docs/tutorials/web/) and Transformers.js 3.7.2 (https://huggingface.co/docs/transformers.js/) in app/model-worker.js, plus the hosted model onnx-community/SmolLM2-135M-ONNX (https://huggingface.co/onnx-community/SmolLM2-135M-ONNX). Data dependencies are the HYG Database (https://github.com/astronexus/HYG-Database), cached as data/raw/hygdata_v41.csv and processed by pipeline/process_hyg.py into data/processed /stars.bin, data/processed/metadata.json, and data/processed/landmarks.json; the LLM seed corpus is app/static/gemini3pro_cosmic_0_39.json, and static visual assets include app/static/starfield-frame.jpg and app/static/lobster-sprite-alpha.png.
+
+# Citation
+
+If you reference this work, please cite it as:
+
+Chakrabarti, K. (2026). Crooked Timber (Version 0.1) [Software and digital artwork]. Zenodo. https://doi.org/10.5281/zenodo.XXXXXXX
+
+@software{chakrabarti_crookedtimber_2026,
+  author       = {Chakrabarti, Kanad},
+  title        = {Crooked Timber},
+  year         = 2026,
+  publisher    = {Zenodo},
+  version      = {0.1},
+  doi          = {10.5281/zenodo.XXXXXXX},
+  url          = {https://doi.org/10.5281/zenodo.XXXXXXX}
+}
