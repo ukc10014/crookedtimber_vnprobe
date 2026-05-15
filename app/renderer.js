@@ -555,7 +555,7 @@ function smoothstep01(edge0, edge1, value) {
 }
 
 function flagStarRgbFromWarmth(warmth) {
-  // Red, white, black, and green reference Gaza/Palestine.
+  // Red, white, black, and green reference the Gaza/Palestine genocide.
   const w = Math.max(0, Math.min(1, warmth));
   const green = hsvToRgb01(141 / 360, 0.86, 1.0);
   const white = [1.0, 1.0, 1.0];

@@ -160,14 +160,18 @@ This repo is a static browser app with no package-manager install step: serve it
 
 If you reference this work, please cite it as:
 
-Chakrabarti, K. (2026). Crooked Timber (Version 0.1) [Software and digital artwork]. Zenodo. https://doi.org/10.5281/zenodo.XXXXXXX
+Chakrabarti, K. (2026). Crooked Timber: What would be like to be a Bracewell-von Neumann Probe ? (Version 0.1) [Software and digital artwork]. Zenodo. https://doi.org/10.5281/zenodo.XXXXXXX
 
 @software{chakrabarti_crookedtimber_2026,
   author       = {Chakrabarti, Kanad},
-  title        = {Crooked Timber},
+  title        = {Crooked Timber: What would be like to be a Bracewell-von Neumann Probe ?},
   year         = 2026,
   publisher    = {Zenodo},
   version      = {0.1},
   doi          = {10.5281/zenodo.XXXXXXX},
   url          = {https://doi.org/10.5281/zenodo.XXXXXXX}
 }
+
+# License
+
+Code is licensed under MIT. Written content (README, AGENTS.md, dedication text, documentation) is licensed under CC-BY-4.0.

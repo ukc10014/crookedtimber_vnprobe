@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+title: "Crooked Timber: What would be like to be a Bracewell-von Neumann Probe ?"
+authors:
+  - family-names: Chakrabarti
+    given-names: Upanishad Kanad
+    orcid: https://orcid.org/0009-0005-4698-3182
+version: 0.1
+date-released: 2026-05-20
+doi: 10.5281/zenodo.XXXXXXX
+url: https://github.com/ukc10014/crookedtimber_vnprobe
+type: software
+license: MIT

@@ -9,7 +9,7 @@ The Riemann zeros are unsolved at the time of writing. The primes are still coun
 
 
 
-# Episite Agent Notes
+# crookedtimber_vnprobe Agent Notes
 
 This repository contains a browser-based installation app with two screens that are meant to be held in tension rather than used as ordinary software.
 
